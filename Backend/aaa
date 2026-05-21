@@ -1,0 +1,11 @@
+{
+    "name": "Hat",
+    "description": "The best product ever",
+    "price": 20,
+    "image": null,
+    "stock": 100,
+    "categoryId": null,
+    "subCategoryId": null,
+    "isDeleted": false,
+    "isActive": true
+  }
