@@ -1,0 +1,61 @@
+<div class="min-h-screen bg-gray-50/50 py-16 sm:py-24 relative overflow-hidden">
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-64 bg-primary/5 blur-[100px] rounded-full pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    
+    <div class="mb-12 text-center sm:text-left flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-gray-200/80 pb-8">
+      <div>
+        <h1 class="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight">All Categories</h1>
+        <p class="mt-4 text-lg text-gray-500 font-light max-w-2xl">Explore our curated collections and find exactly what you're looking for.</p>
+      </div>
+    </div>
+
+    @if (isLoading()) {
+      <div class="flex flex-col items-center justify-center py-32 space-y-4">
+        <div class="animate-spin rounded-full h-14 w-14 border-4 border-gray-200 border-t-primary"></div>
+        <p class="text-sm font-medium text-gray-500 animate-pulse tracking-wide">Loading categories...</p>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+        @for (cat of categories(); track cat._id) {
+          <a
+            [routerLink]="['/category', cat._id]"
+            class="group relative flex items-center justify-between p-6 sm:p-8 bg-white rounded-[2rem] shadow-sm hover:shadow-2xl hover:shadow-primary/10 border border-gray-100 hover:border-primary/20 transition-all duration-500 hover:-translate-y-1.5 overflow-hidden focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+          >
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-gradient-to-br from-primary/5 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+            <h3 class="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors relative z-10">
+              {{ cat.title }}
+            </h3>
+            
+            <div class="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-primary/10 transition-colors duration-300 relative z-10 shrink-0 ml-4">
+              <svg
+                class="w-5 h-5 text-gray-400 group-hover:text-primary transition-transform duration-300 group-hover:translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                ></path>
+              </svg>
+            </div>
+          </a>
+        } @empty {
+          <div class="col-span-full flex flex-col items-center justify-center py-24 px-4 text-center bg-white rounded-[3rem] border border-dashed border-gray-300 shadow-sm mt-4">
+            <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6 shadow-inner">
+              <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">No categories found</h3>
+            <p class="mt-2 text-gray-500 font-light max-w-md mx-auto">We're currently updating our catalog. Please check back soon to discover new categories.</p>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

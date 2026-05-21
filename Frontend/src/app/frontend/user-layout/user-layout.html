@@ -1,0 +1,233 @@
+<div class="max-w-5xl mx-auto space-y-8 pb-12 pt-8 px-4 sm:px-6">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h2 class="text-3xl font-black text-gray-900 tracking-tight">My Profile</h2>
+      <p class="text-sm font-medium text-gray-500 mt-1">
+        Manage your personal information and address book.
+      </p>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex justify-center items-center py-20">
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-primary"
+      ></div>
+    </div>
+  } @else {
+    <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8">
+      <h3 class="text-xl font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">
+        Personal Information
+      </h3>
+
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfileInfo()">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700 ml-1">Email Address</label>
+            <input
+              type="text"
+              [value]="currentUser()?.email"
+              disabled
+              class="w-full p-3.5 bg-gray-100 text-gray-500 border border-gray-200 rounded-xl cursor-not-allowed"
+            />
+            <p class="text-xs text-gray-400 ml-1">Email cannot be changed.</p>
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700 ml-1">Full Name</label>
+            <input
+              formControlName="name"
+              class="w-full p-3.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700 ml-1">Mobile Number</label>
+            <input
+              formControlName="mobile"
+              class="w-full p-3.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all"
+            />
+          </div>
+        </div>
+
+        <div class="mt-8 flex justify-end">
+          <button
+            type="submit"
+            [disabled]="profileForm.invalid || isSaving()"
+            class="px-8 py-3.5 bg-primary text-white rounded-xl font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:transform-none"
+          >
+            {{ isSaving() ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8">
+      <div class="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
+        <h3 class="text-xl font-bold text-gray-900">Address Book</h3>
+        <button
+          (click)="openAddAddressModal()"
+          class="text-sm font-bold text-primary hover:text-blue-700 transition-colors flex items-center gap-1"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            ></path>
+          </svg>
+          Add New
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        @for (addr of addresses(); track $index) {
+          <div
+            class="relative p-6 rounded-2xl border-2 transition-all duration-300"
+            [ngClass]="
+              addr.isDefault
+                ? 'border-primary bg-blue-50/30'
+                : 'border-gray-100 bg-white hover:border-gray-200'
+            "
+          >
+            <div class="flex justify-between items-start mb-3">
+              <div class="flex items-center gap-2">
+                <span
+                  class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-full uppercase tracking-wide"
+                >
+                  {{ addr.label }}
+                </span>
+                @if (addr.isDefault) {
+                  <span
+                    class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full uppercase tracking-wide flex items-center gap-1"
+                  >
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd"
+                      ></path>
+                    </svg>
+                    Default
+                  </span>
+                }
+              </div>
+            </div>
+
+            <p class="text-gray-600 text-sm mb-6 leading-relaxed">{{ addr.addressText }}</p>
+
+            <div class="flex items-center gap-4 text-sm font-bold pt-4 border-t border-gray-100/60">
+              <button
+                (click)="openEditAddressModal($index)"
+                class="text-gray-500 hover:text-primary transition-colors"
+              >
+                Edit
+              </button>
+              <button
+                (click)="removeAddress($index)"
+                class="text-red-400 hover:text-red-600 transition-colors"
+              >
+                Remove
+              </button>
+
+              <div class="flex-1"></div>
+
+              @if (!addr.isDefault) {
+                <button
+                  (click)="setDefaultAddress($index)"
+                  class="text-primary hover:text-blue-700 transition-colors"
+                >
+                  Set as Default
+                </button>
+              }
+            </div>
+          </div>
+        } @empty {
+          <div
+            class="col-span-full py-12 text-center border-2 border-dashed border-gray-200 rounded-2xl"
+          >
+            <p class="text-gray-500 font-medium">You haven't added any addresses yet.</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (showAddressModal()) {
+    <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+      <div
+        class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"
+        (click)="closeAddressModal()"
+      ></div>
+      <div
+        class="relative z-20 w-full max-w-lg bg-white rounded-[2rem] p-8 shadow-2xl border border-gray-100"
+      >
+        <form [formGroup]="addressForm" (ngSubmit)="saveAddress()">
+          <h2 class="text-2xl font-black mb-6">
+            {{ isEditingAddress() ? 'Edit Address' : 'Add New Address' }}
+          </h2>
+
+          <div class="space-y-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-bold text-gray-700 ml-1">Address Label</label>
+              <select
+                formControlName="label"
+                class="w-full p-3.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all cursor-pointer"
+              >
+                <option value="home">Home</option>
+                <option value="work">Work</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="space-y-2">
+              <label class="block text-sm font-bold text-gray-700 ml-1">Full Address</label>
+              <textarea
+                formControlName="addressText"
+                rows="3"
+                placeholder="Street, City, Building, Apartment..."
+                class="w-full p-3.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all resize-none"
+              ></textarea>
+            </div>
+
+            <label
+              class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"
+            >
+              <input
+                type="checkbox"
+                formControlName="isDefault"
+                class="w-5 h-5 rounded text-primary focus:ring-primary"
+              />
+              <div>
+                <span class="font-bold text-sm text-gray-900 block"
+                  >Set as Default Delivery Address</span
+                >
+                <span class="text-xs text-gray-500"
+                  >We will use this address at checkout by default.</span
+                >
+              </div>
+            </label>
+          </div>
+
+          <div class="mt-8 flex gap-3">
+            <button
+              type="submit"
+              [disabled]="addressForm.invalid"
+              class="flex-1 bg-primary text-white py-3.5 rounded-xl font-bold shadow-lg hover:shadow-xl disabled:opacity-50 transition-all"
+            >
+              Save Address
+            </button>
+            <button
+              type="button"
+              (click)="closeAddressModal()"
+              class="flex-1 bg-gray-100 text-gray-700 py-3.5 rounded-xl font-bold hover:bg-gray-200 transition-all"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

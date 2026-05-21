@@ -1,0 +1,179 @@
+<div class="space-y-8 pb-12">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h2 class="text-3xl font-black text-gray-900 tracking-tight">Manage Testimonials</h2>
+      <p class="text-sm font-medium text-gray-500 mt-1">
+        Review, approve, edit, or reject customer feedback.
+      </p>
+    </div>
+  </div>
+
+  <div
+    class="bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] sm:rounded-[2.5rem] border border-gray-100 overflow-hidden"
+  >
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-100">
+        <thead class="bg-gray-50/80 backdrop-blur-sm">
+          <tr>
+            <th
+              class="px-8 py-5 text-left text-xs font-black text-gray-500 uppercase tracking-widest"
+            >
+              Comment
+            </th>
+            <th
+              class="px-8 py-5 text-left text-xs font-black text-gray-500 uppercase tracking-widest"
+            >
+              Rating
+            </th>
+            <th
+              class="px-8 py-5 text-left text-xs font-black text-gray-500 uppercase tracking-widest"
+            >
+              Status
+            </th>
+            <th
+              class="px-8 py-5 text-right text-xs font-black text-gray-500 uppercase tracking-widest"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="bg-white divide-y divide-gray-100">
+          @if (isLoading()) {
+            <tr>
+              <td colspan="4" class="px-8 py-20 text-center text-gray-400">
+                Loading testimonials...
+              </td>
+            </tr>
+          } @else {
+            @for (test of testimonials(); track test._id) {
+              <tr class="hover:bg-gray-50/80 transition-colors duration-200">
+                <td class="px-8 py-5">
+                  <div
+                    class="text-sm font-medium text-gray-900 max-w-xs sm:max-w-md truncate"
+                    [title]="test.comment"
+                  >
+                    {{ test.comment }}
+                  </div>
+                </td>
+                <td class="px-8 py-5">
+                  <span class="text-base font-black text-gray-900">{{ test.stars }}/5</span>
+                </td>
+                <td class="px-8 py-5">
+                  <span
+                    class="px-3 py-1.5 inline-flex text-xs font-bold rounded-full uppercase tracking-wider"
+                    [ngClass]="{
+                      'bg-green-100 text-green-800': test.status === 'approved',
+                      'bg-yellow-100 text-yellow-800': test.status === 'pending',
+                      'bg-red-100 text-red-800': test.status === 'refused',
+                    }"
+                  >
+                    {{ test.status }}
+                  </span>
+                </td>
+                <td class="px-8 py-5 text-right space-x-2">
+                  <button
+                    (click)="updateStatus(test._id, 'approved')"
+                    [disabled]="test.status === 'approved'"
+                    class="text-green-600 hover:text-green-800 font-bold text-sm disabled:opacity-40"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    (click)="updateStatus(test._id, 'refused')"
+                    [disabled]="test.status === 'refused'"
+                    class="text-red-400 hover:text-red-600 font-bold text-sm disabled:opacity-40"
+                  >
+                    Reject
+                  </button>
+
+                  <span class="text-gray-300">|</span>
+
+                  <button
+                    (click)="openEditModal(test)"
+                    class="text-primary hover:text-blue-700 font-bold text-sm"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    (click)="deleteTestimonial(test._id)"
+                    class="text-red-600 hover:text-red-800 font-bold text-sm"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  @if (showModal()) {
+    <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" (click)="closeModal()"></div>
+      <div
+        class="relative z-20 w-full max-w-lg bg-white rounded-[2rem] p-8 shadow-2xl border border-gray-100"
+      >
+        <form [formGroup]="testimonialForm" (ngSubmit)="saveTestimonial()">
+          <h2 class="text-2xl font-black mb-6">Edit Testimonial</h2>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-bold text-gray-700 ml-1 mb-1">Comment</label>
+              <textarea
+                formControlName="comment"
+                rows="4"
+                class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl resize-none"
+              ></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-bold text-gray-700 ml-1 mb-1">Rating</label>
+              <select
+                formControlName="stars"
+                class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl"
+              >
+                <option [value]="5">5 Stars</option>
+                <option [value]="4">4 Stars</option>
+                <option [value]="3">3 Stars</option>
+                <option [value]="2">2 Stars</option>
+                <option [value]="1">1 Star</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-bold text-gray-700 ml-1 mb-1">Status</label>
+              <select
+                formControlName="status"
+                class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl"
+              >
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="refused">Refused</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-8 flex gap-3">
+            <button
+              type="submit"
+              [disabled]="testimonialForm.invalid"
+              class="flex-1 bg-primary text-white py-3 rounded-xl font-bold disabled:opacity-50"
+            >
+              Save Changes
+            </button>
+            <button
+              type="button"
+              (click)="closeModal()"
+              class="flex-1 bg-gray-100 py-3 rounded-xl font-bold"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

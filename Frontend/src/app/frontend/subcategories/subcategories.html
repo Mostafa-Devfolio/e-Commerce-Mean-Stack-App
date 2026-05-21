@@ -1,0 +1,108 @@
+<div class="min-h-screen bg-gray-50/50 py-12 lg:py-20 relative overflow-hidden">
+  <div
+    class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none"
+  ></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <a
+      routerLink="/categories"
+      class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-primary mb-8 transition-colors group focus:outline-none"
+    >
+      <svg
+        class="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-300"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 19l-7-7m0 0l7-7m-7 7h18"
+        ></path>
+      </svg>
+      Back to Categories
+    </a>
+
+    <div class="mb-12 border-b border-gray-200/80 pb-8">
+      <h1 class="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight">Subcategories</h1>
+      <p class="mt-4 text-lg text-gray-500 font-light max-w-2xl">
+        Narrow down your search to find the perfect products.
+      </p>
+    </div>
+
+    @if (isLoading()) {
+      <div class="flex flex-col items-center justify-center py-32 space-y-4">
+        <div
+          class="animate-spin rounded-full h-14 w-14 border-4 border-gray-200 border-t-primary"
+        ></div>
+        <p class="text-sm font-medium text-gray-500 animate-pulse tracking-wide">
+          Loading subcategories...
+        </p>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        @for (sub of subcategories(); track sub._id) {
+          <div
+            class="group relative bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/20 transition-all duration-500 hover:-translate-y-1.5 flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden min-h-[160px]"
+          >
+            <div
+              class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+            ></div>
+
+            <div
+              class="w-12 h-12 rounded-full bg-gray-50 mb-4 flex items-center justify-center group-hover:bg-primary/10 transition-colors duration-500 relative z-10"
+            >
+              <svg
+                class="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                ></path>
+              </svg>
+            </div>
+
+            <h3
+              class="text-lg font-bold text-gray-900 group-hover:text-primary transition-colors relative z-10"
+            >
+              {{ sub.title }}
+            </h3>
+          </div>
+        } @empty {
+          <div
+            class="col-span-full flex flex-col items-center justify-center py-24 px-4 text-center bg-white rounded-[3rem] border border-dashed border-gray-300 shadow-sm mt-4"
+          >
+            <div
+              class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6 shadow-inner"
+            >
+              <svg
+                class="w-10 h-10 text-gray-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                ></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">No subcategories available</h3>
+            <p class="mt-2 text-gray-500 font-light max-w-md mx-auto">
+              There are currently no subcategories listed under this main category. Please check
+              back later.
+            </p>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

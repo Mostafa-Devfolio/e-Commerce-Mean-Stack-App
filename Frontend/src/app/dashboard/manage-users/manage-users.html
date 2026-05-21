@@ -1,0 +1,176 @@
+<div class="space-y-8 pb-12">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h2 class="text-3xl font-black text-gray-900 tracking-tight">Registered Users</h2>
+      <p class="text-sm font-medium text-gray-500 mt-1">
+        Manage platform accounts and monitor role permissions.
+      </p>
+    </div>
+    <button
+      (click)="openAddModal()"
+      class="group inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-blue-600 text-white rounded-xl shadow-[0_8px_20px_-6px_rgba(37,99,235,0.4)] hover:shadow-[0_12px_25px_-6px_rgba(37,99,235,0.5)] transition-all font-bold text-sm"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 4v16m8-8H4"
+        ></path>
+      </svg>
+      Add New User
+    </button>
+  </div>
+
+  <div
+    class="bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] sm:rounded-[2.5rem] border border-gray-100 overflow-hidden"
+  >
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-100">
+        <thead class="bg-gray-50/80 backdrop-blur-sm">
+          <tr>
+            <th
+              class="px-8 py-5 text-left text-xs font-black text-gray-500 uppercase tracking-widest"
+            >
+              User Profile
+            </th>
+            <th
+              class="px-8 py-5 text-left text-xs font-black text-gray-500 uppercase tracking-widest"
+            >
+              Contact Info
+            </th>
+            <th
+              class="px-8 py-5 text-left text-xs font-black text-gray-500 uppercase tracking-widest"
+            >
+              System Role
+            </th>
+            <th
+              class="px-8 py-5 text-right text-xs font-black text-gray-500 uppercase tracking-widest"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-100">
+          @if (isLoading()) {
+            <tr>
+              <td colspan="4" class="px-8 py-20 text-center text-gray-400">
+                Loading user directory...
+              </td>
+            </tr>
+          } @else {
+            @for (user of users(); track user._id) {
+              <tr class="hover:bg-gray-50/80 transition-colors">
+                <td class="px-8 py-5 font-bold text-gray-900">{{ user.name }}</td>
+                <td class="px-8 py-5 text-gray-500">{{ user.email }}</td>
+                <td class="px-8 py-5">
+                  <span
+                    class="px-3 py-1 rounded-full text-xs font-bold"
+                    [class.bg-purple-100]="user.role === 'admin'"
+                    [class.text-purple-800]="user.role === 'admin'"
+                    [class.bg-gray-100]="user.role === 'user'"
+                    [class.text-gray-800]="user.role === 'user'"
+                  >
+                    {{ user.role | uppercase }}
+                  </span>
+                </td>
+                <td class="px-8 py-5 text-right space-x-3">
+                  <button
+                    (click)="openEditModal(user)"
+                    class="text-primary hover:underline font-bold text-sm"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    (click)="deleteUser(user._id)"
+                    class="text-red-500 hover:underline font-bold text-sm"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  @if (showModal()) {
+    <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+      <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" (click)="closeModal()"></div>
+      <div
+        class="relative w-full max-w-lg bg-white rounded-[2rem] p-8 shadow-2xl border border-gray-100"
+      >
+        <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+          <h2 class="text-2xl font-black mb-6">{{ isEditing() ? 'Edit User' : 'Add New User' }}</h2>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-bold text-gray-700 ml-1 mb-1">Name</label>
+              <input
+                formControlName="name"
+                class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-gray-700 ml-1 mb-1">Email</label>
+              <input
+                formControlName="email"
+                class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-gray-700 ml-1 mb-1">
+                {{ isEditing() ? 'New Password (Optional)' : 'Password' }}
+              </label>
+              <input
+                type="password"
+                formControlName="password"
+                class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-gray-700 ml-1 mb-1">Mobile Number</label>
+              <input
+                formControlName="mobile"
+                type="tel"
+                placeholder="01012345678"
+                class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-gray-700 ml-1 mb-1">System Role</label>
+              <select
+                formControlName="role"
+                class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl"
+              >
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            <label class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer">
+              <input type="checkbox" formControlName="isActive" class="w-5 h-5 rounded" />
+              <span class="font-bold text-sm">Active Account</span>
+            </label>
+          </div>
+          <div class="mt-8 flex gap-3">
+            <button
+              type="submit"
+              [disabled]="userForm.invalid"
+              class="flex-1 bg-primary text-white py-3 rounded-xl font-bold disabled:opacity-50"
+            >
+              Save Changes
+            </button>
+            <button
+              type="button"
+              (click)="closeModal()"
+              class="flex-1 bg-gray-100 py-3 rounded-xl font-bold"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

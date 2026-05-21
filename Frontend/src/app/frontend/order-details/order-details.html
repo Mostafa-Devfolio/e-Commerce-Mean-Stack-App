@@ -1,0 +1,227 @@
+<div class="min-h-screen bg-gray-50/50 py-12 lg:py-20 relative overflow-hidden">
+  <div
+    class="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full pointer-events-none"
+  ></div>
+
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <a
+      routerLink="/orders"
+      class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-primary mb-8 transition-colors group focus:outline-none"
+    >
+      <svg
+        class="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-300"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 19l-7-7m0 0l7-7m-7 7h18"
+        ></path>
+      </svg>
+      Back to Orders
+    </a>
+
+    @if (isLoading()) {
+      <div class="flex flex-col items-center justify-center py-32 space-y-4">
+        <div
+          class="animate-spin rounded-full h-14 w-14 border-4 border-gray-200 border-t-primary"
+        ></div>
+        <p class="text-sm font-medium text-gray-500 animate-pulse tracking-wide">
+          Retrieving order details...
+        </p>
+      </div>
+    } @else if (order()) {
+      <div
+        class="bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] sm:rounded-[2rem] border border-gray-100 overflow-hidden"
+      >
+        <div
+          class="px-6 py-8 sm:px-10 border-b border-gray-100 bg-white flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4"
+        >
+          <div>
+            <h1 class="text-2xl font-black text-gray-900 tracking-tight">Order Details</h1>
+            <p
+              class="mt-1 text-sm text-gray-500 font-mono bg-gray-100 inline-block px-2 py-0.5 rounded-md"
+            >
+              ID: {{ order()?._id }}
+            </p>
+          </div>
+          <div>
+            <span
+              class="px-4 py-1.5 inline-flex text-xs leading-5 font-bold rounded-full bg-blue-50 text-blue-700 border border-blue-100 shadow-sm uppercase tracking-wider"
+            >
+              {{ order()?.status | uppercase }}
+            </span>
+          </div>
+        </div>
+
+        <div class="px-6 py-8 sm:px-10 bg-gray-50/50 border-b border-gray-100">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div
+              class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-start gap-4"
+            >
+              <div
+                class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center shrink-0 text-gray-400"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                  ></path>
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                  Contact
+                </p>
+                <p class="text-sm font-bold text-gray-900">{{ order()?.phoneNumber }}</p>
+              </div>
+            </div>
+
+            <div
+              class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-start gap-4"
+            >
+              <div
+                class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center shrink-0 text-gray-400"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                  Address ID
+                </p>
+                <p class="text-sm font-bold text-gray-900 truncate" [title]="order()?.addressId">
+                  {{ order()?.addressId }}
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-5 shadow-sm border border-gray-800 flex items-start gap-4 text-white"
+            >
+              <div
+                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 text-gray-300"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z"
+                  ></path>
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
+                  Total Paid
+                </p>
+                <p class="text-xl font-black text-white">${{ order()?.totalPrice }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="px-6 py-8 sm:px-10">
+          <h2 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+              ></path>
+            </svg>
+            Items Purchased
+          </h2>
+
+          <ul class="space-y-3">
+            @for (item of order()?.products; track item.productId) {
+              <li
+                class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center justify-between shadow-sm hover:border-gray-200 transition-colors"
+              >
+                <div class="flex items-center gap-4 min-w-0">
+                  <div
+                    class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center shrink-0 border border-gray-100"
+                  >
+                    <svg
+                      class="w-6 h-6 text-gray-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.5"
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-sm font-bold text-gray-900 truncate">
+                      {{ item.name || 'Product ID: ' + item.productId }}
+                    </p>
+                    <p class="text-xs text-gray-500 font-medium mt-0.5">Qty: {{ item.quantity }}</p>
+                  </div>
+                </div>
+                <div class="ml-4 flex-shrink-0 text-right">
+                  <p class="text-base font-black text-gray-900">${{ item.price }}</p>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    } @else {
+      <div
+        class="bg-white/80 backdrop-blur-xl shadow-sm sm:rounded-[2rem] border border-gray-100 py-24 px-6 text-center"
+      >
+        <div
+          class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner"
+        >
+          <svg
+            class="w-10 h-10 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900">Order not found</h3>
+        <p class="mt-2 text-gray-500 font-light">
+          We couldn't locate the details for this specific order. It may have been removed or the ID
+          is incorrect.
+        </p>
+        <a
+          routerLink="/orders"
+          class="mt-6 inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl text-white bg-gray-900 hover:bg-gray-800 transition-colors"
+        >
+          Return to Orders
+        </a>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,265 @@
+<div class="min-h-screen bg-gray-50/50 py-12 lg:py-20 relative overflow-hidden">
+  <div
+    class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none"
+  ></div>
+  <div
+    class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent/5 blur-[100px] rounded-full pointer-events-none"
+  ></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <a
+      routerLink="/explore"
+      class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-primary mb-8 transition-colors group focus:outline-none"
+    >
+      <svg
+        class="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-300"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 19l-7-7m0 0l7-7m-7 7h18"
+        ></path>
+      </svg>
+      Back to Explore
+    </a>
+
+    @if (isLoading()) {
+      <div class="flex flex-col items-center justify-center py-32 space-y-4">
+        <div
+          class="animate-spin rounded-full h-14 w-14 border-4 border-gray-200 border-t-primary"
+        ></div>
+        <p class="text-sm font-medium text-gray-500 animate-pulse tracking-wide">
+          Loading product details...
+        </p>
+      </div>
+    } @else if (product()) {
+      <div class="lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-start">
+        <div class="flex flex-col-reverse relative group">
+          <div
+            class="w-full aspect-square bg-white rounded-[2.5rem] p-4 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 relative z-10"
+          >
+            <div
+              class="w-full h-full bg-gray-50 rounded-[1.5rem] overflow-hidden flex items-center justify-center relative"
+            >
+              @if (product()?.image) {
+                <img
+                  [src]="product()?.image"
+                  [alt]="product()?.name"
+                  class="w-full h-full object-center object-cover transition-transform duration-700 ease-out hover:scale-110"
+                />
+              } @else {
+                <div class="flex flex-col items-center justify-center text-gray-400">
+                  <svg
+                    class="w-16 h-16 mb-4 opacity-50"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    ></path>
+                  </svg>
+                  <span class="text-lg font-medium">No Image Available</span>
+                </div>
+              }
+            </div>
+          </div>
+          <div
+            class="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent blur-2xl -z-10 rounded-[3rem] transform group-hover:scale-105 transition-transform duration-500"
+          ></div>
+        </div>
+
+        <div class="mt-10 sm:mt-16 lg:mt-0 flex flex-col h-full">
+          <div class="mb-6">
+            <h1
+              class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-gray-900 leading-tight"
+            >
+              {{ product()?.name }}
+            </h1>
+          </div>
+
+          <div class="mb-8 flex items-end gap-4">
+            <h2 class="sr-only">Product information</h2>
+            <p
+              class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600"
+            >
+              ${{ product()?.price }}
+            </p>
+          </div>
+
+          <div class="mb-8 flex items-center">
+            <div
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-full border shadow-sm bg-white"
+              [class.border-green-200]="product()!.stock > 0"
+              [class.border-red-200]="product()!.stock <= 0"
+            >
+              <span class="relative flex h-2.5 w-2.5">
+                <span
+                  class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                  [class.bg-green-400]="product()!.stock > 0"
+                  [class.bg-red-400]="product()!.stock <= 0"
+                ></span>
+                <span
+                  class="relative inline-flex rounded-full h-2.5 w-2.5"
+                  [class.bg-green-500]="product()!.stock > 0"
+                  [class.bg-red-500]="product()!.stock <= 0"
+                ></span>
+              </span>
+              <span
+                class="text-sm font-bold"
+                [class.text-green-700]="product()!.stock > 0"
+                [class.text-red-700]="product()!.stock <= 0"
+              >
+                {{
+                  product()!.stock > 0
+                    ? product()!.stock + ' In Stock - Ready to ship'
+                    : 'Out of Stock'
+                }}
+              </span>
+            </div>
+          </div>
+
+          <div class="mb-10">
+            <h3 class="text-lg font-bold text-gray-900 mb-3">Description</h3>
+            <div class="text-base text-gray-500 font-light leading-relaxed space-y-6">
+              <p>{{ product()?.description }}</p>
+            </div>
+          </div>
+
+          <div
+            class="mt-auto pt-8 border-t border-gray-100 flex flex-col sm:flex-row gap-4 items-center"
+          >
+            <div
+              class="flex items-center bg-gray-50 p-1.5 rounded-xl border border-gray-200 shadow-inner w-full sm:w-auto h-14"
+            >
+              <button
+                (click)="quantity.set(quantity() > 1 ? quantity() - 1 : 1)"
+                class="w-12 h-full flex items-center justify-center rounded-lg bg-white shadow-sm text-gray-600 hover:text-primary hover:bg-blue-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M20 12H4"
+                  ></path>
+                </svg>
+              </button>
+
+              <input
+                type="number"
+                [ngModel]="quantity()"
+                disabled
+                class="w-16 text-center bg-transparent focus:outline-none text-gray-900 font-bold text-lg disabled:opacity-100 appearance-none"
+              />
+
+              <button
+                (click)="
+                  quantity.set(quantity() < product()!.stock ? quantity() + 1 : product()!.stock)
+                "
+                class="w-12 h-full flex items-center justify-center rounded-lg bg-white shadow-sm text-gray-600 hover:text-primary hover:bg-blue-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4v16m8-8H4"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+
+            <button
+              (click)="addToCart()"
+              [disabled]="product()!.stock <= 0 || isAdding()"
+              class="group relative w-full flex-1 flex justify-center items-center h-14 border border-transparent rounded-xl text-lg font-bold text-white bg-gradient-to-r from-primary to-blue-600 hover:from-blue-600 hover:to-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-60 disabled:cursor-not-allowed shadow-[0_8px_20px_-6px_rgba(37,99,235,0.4)] hover:shadow-[0_12px_25px_-6px_rgba(37,99,235,0.5)] transition-all duration-300 transform hover:-translate-y-0.5"
+            >
+              @if (isAdding()) {
+                <span class="flex items-center gap-2">
+                  <svg
+                    class="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Adding to Bag...
+                </span>
+              } @else {
+                <span class="flex items-center gap-2">
+                  Add to Bag
+                  <svg
+                    class="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                    ></path>
+                  </svg>
+                </span>
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div
+        class="flex flex-col items-center justify-center py-24 px-4 text-center bg-white rounded-[3rem] border border-dashed border-gray-300 shadow-sm max-w-3xl mx-auto"
+      >
+        <div
+          class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6 shadow-inner border border-gray-100"
+        >
+          <svg
+            class="w-12 h-12 text-gray-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900">Product not found</h3>
+        <p class="mt-2 text-gray-500 font-light max-w-md mx-auto text-lg">
+          We couldn't find the product you're looking for. It may have been removed or is currently
+          unavailable.
+        </p>
+        <a
+          routerLink="/explore"
+          class="mt-8 inline-flex items-center justify-center px-8 py-3.5 border border-transparent text-base font-bold rounded-xl text-white bg-gray-900 hover:bg-gray-800 transition-colors"
+        >
+          Browse all products
+        </a>
+      </div>
+    }
+  </div>
+</div>

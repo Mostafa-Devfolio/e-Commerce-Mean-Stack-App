@@ -1,0 +1,10 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "tailwindcss";
+
+/* This replaces the tailwind.config.js theme extension */
+@theme {
+  --color-primary: #2563eb;
+  --color-secondary: #475569;
+  --color-accent: #f59e0b;
+}
